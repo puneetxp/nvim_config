@@ -37,7 +37,8 @@ lsp.set_preferences({
     }
 })
 
-lsp.on_attach(function(client, bufnr)
+-- Define common LSP on_attach function
+local function lsp_on_attach(client, bufnr)
   local opts = {buffer = bufnr, remap = false}
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
@@ -50,17 +51,37 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-end)
+  
+  -- Ensure capabilities are properly set
+  if client.server_capabilities then
+    client.server_capabilities.codeActionProvider = true
+    client.server_capabilities.referencesProvider = true
+    client.server_capabilities.renameProvider = true
+  end
+end
+
+lsp.on_attach(lsp_on_attach)
 
 lsp.setup()
 
 local nvim_lsp = require('lspconfig')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+-- Explicitly configure TypeScript server to ensure proper on_attach
+nvim_lsp.ts_ls.setup({
+  capabilities = capabilities,
+  on_attach = lsp_on_attach,
+  root_dir = nvim_lsp.util.root_pattern("package.json", "tsconfig.json", ".git"),
+  single_file_support = true,
+})
 
 -- Configure Volar for Vue.js with 2-space indentation
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
 nvim_lsp.volar.setup({
   capabilities = capabilities,
   on_attach = function(client, bufnr)
+    -- Run the common LSP on_attach first
+    lsp_on_attach(client, bufnr)
+    
     -- Enable formatting for Volar
     client.server_capabilities.documentFormattingProvider = true
     client.server_capabilities.documentRangeFormattingProvider = true
