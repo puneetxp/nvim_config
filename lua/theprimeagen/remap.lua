@@ -1,4 +1,3 @@
-
 vim.g.mapleader = " "
 -- Back
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
@@ -13,10 +12,10 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
-vim.keymap.set("n", "<leader>vwm", function()
+vim.keymap.set("n", "<leader>vmm", function()
     require("vim-with-me").StartVimWithMe()
 end)
-vim.keymap.set("n", "<leader>svwm", function()
+vim.keymap.set("n", "<leader>svmm", function()
     require("vim-with-me").StopVimWithMe()
 end)
 
@@ -52,4 +51,7 @@ vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>");
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
+
+-- Test mapping to verify three-key leader sequences work
+vim.keymap.set("n", "<leader>abc", function() print("Three-key leader mapping works!") end)
 

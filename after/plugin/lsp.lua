@@ -4,6 +4,7 @@ lsp.preset("recommended")
 
 lsp.ensure_installed({
   'tsserver',
+  'volar',
 })
 
 -- Fix Undefined global 'vim'
@@ -45,7 +46,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
   vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
   vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-  vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+  vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, opts)
   vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
@@ -54,6 +55,86 @@ end)
 lsp.setup()
 
 local nvim_lsp = require('lspconfig')
+
+-- Configure Volar for Vue.js with 2-space indentation
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+nvim_lsp.volar.setup({
+  capabilities = capabilities,
+  on_attach = function(client, bufnr)
+    -- Enable formatting for Volar
+    client.server_capabilities.documentFormattingProvider = true
+    client.server_capabilities.documentRangeFormattingProvider = true
+    
+    local opts = {buffer = bufnr, remap = false}
+    vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format() end, opts)
+    
+    -- Auto-format on save for Vue files
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      callback = function()
+        if vim.bo[bufnr].filetype == "vue" then
+          vim.lsp.buf.format({ bufnr = bufnr })
+        end
+      end,
+    })
+  end,
+  init_options = {
+    typescript = {
+      tsdk = vim.fn.getcwd() .. '/node_modules/typescript/lib'
+    },
+    preferences = {
+      includeCompletionsForModuleExports = true,
+      includeCompletionsWithInsertText = true
+    }
+  },
+  settings = {
+    volar = {
+      formatting = {
+        enable = true,
+        tabSize = 2,
+        indentSize = 2,
+        insertSpaces = true
+      }
+    },
+    typescript = {
+      format = {
+        enable = true,
+        indentSize = 2,
+        tabSize = 2,
+        insertSpaceAfterCommaDelimiter = true,
+        insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
+        insertSpaceAfterKeywordsInControlFlowStatements = true,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyParentheses = false,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = false,
+        insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = false,
+        insertSpaceBeforeAndAfterBinaryOperators = true,
+        convertTabsToSpaces = true
+      }
+    },
+    javascript = {
+      format = {
+        enable = true,
+        indentSize = 2,
+        tabSize = 2,
+        insertSpaceAfterCommaDelimiter = true,
+        insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
+        insertSpaceAfterKeywordsInControlFlowStatements = true,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyParentheses = false,
+        insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = false,
+        insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = false,
+        insertSpaceBeforeAndAfterBinaryOperators = true,
+        convertTabsToSpaces = true
+      }
+    },
+    vue = {
+      format = {
+        enable = true,
+        indentSize = 2,
+        tabSize = 2
+      }
+    }
+  }
+})
 --[[
 nvim_lsp.denols.setup {
     on_attach = on_attach,
