@@ -15,6 +15,20 @@ vim.opt.smartindent = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+
+local uv = vim.loop
+local function ensure_tmpdir()
+  local tmp = vim.env.TMPDIR
+  if tmp and uv.fs_access(tmp, "RWX") then
+    return
+  end
+
+  local fallback = string.format("/tmp/nvim-%s", vim.env.USER or "user")
+  vim.fn.mkdir(fallback, "p")
+  vim.env.TMPDIR = fallback
+end
+
+ensure_tmpdir()
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false

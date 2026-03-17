@@ -1,0 +1,2 @@
+WRN 2026-03-18T00:35:20.617 ?.37926    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/lv/xntk8nn54z5_t0m4vdk7ftkr0000gp/T/nvim.puneetsharma/XXXXXX
+WRN 2026-03-18T00:35:20.618 ?.37926    server_start:193: Failed to start server: operation not permitted: /tmp/nvim.puneetsharma/ak6J8d/nvim.37926.0
