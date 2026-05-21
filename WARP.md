@@ -14,7 +14,7 @@ This is ThePrimeagen's Neovim configuration written in Lua. It's a modern, minim
   - `init.lua` - Main initialization, autocommands, and plugin loading orchestration
   - `set.lua` - Vim options and editor settings (tabs, search, undo, etc.)
   - `remap.lua` - Custom keybindings and leader key mappings
-  - `packer.lua` - Plugin management using Packer.nvim
+  - `lazy.lua` - Plugin management using lazy.nvim
 - **Plugin Configurations**: `after/plugin/` - Individual plugin setup files that load after plugins are installed
 
 ### Key Architectural Patterns
@@ -28,9 +28,9 @@ This is ThePrimeagen's Neovim configuration written in Lua. It's a modern, minim
 ### Plugin Management
 ```bash
 # Install/update plugins (run from within Neovim)
-:PackerSync
-:PackerInstall
-:PackerUpdate
+:Lazy
+:Lazy sync
+:Lazy update
 ```
 
 ### Testing Configuration Changes
@@ -72,7 +72,7 @@ The configuration intelligently handles both Deno and Node.js projects:
 
 ### Text Editing Enhancements
 - **Treesitter**: Advanced syntax highlighting and code parsing
-- **LSP Zero**: Simplified LSP configuration with sensible defaults
+- **blink.cmp**: Modern, fast Rust-compiled autocompletion with native LSP integration
 - **Smart Yanking**: Visual feedback when copying text
 - **Undo Tree**: Persistent undo history with visual tree navigation
 
@@ -122,9 +122,9 @@ apt install ripgrep
 ## Configuration Customization
 
 ### Adding New Plugins
-1. Add the plugin to `lua/theprimeagen/packer.lua`
-2. Create a configuration file in `after/plugin/[plugin-name].lua`
-3. Run `:PackerSync` to install
+1. Add the plugin to `lua/theprimeagen/lazy.lua`
+2. Create a configuration file in `after/plugin/[plugin-name].lua` (optional, or configure inline in `lazy.lua`)
+3. Run `:Lazy` to sync
 
 ### Modifying Settings
 - **Editor settings**: Edit `lua/theprimeagen/set.lua`
@@ -139,6 +139,6 @@ apt install ripgrep
 - Keybindings follow consistent patterns with the space leader key
 
 ### LSP Configuration Strategy
-- Uses LSP Zero as a foundation with minimal configuration overhead
+- Uses native `lspconfig` coupled with `blink.cmp` for blazing fast completion and high-quality LSP integration
 - Language servers are auto-installed via Mason
-- Custom configurations overlay LSP Zero defaults for specific needs (Vue, TypeScript formatting)
+- Custom configurations overlay native setups for specific needs (Vue, TypeScript formatting)
